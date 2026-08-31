@@ -42,18 +42,13 @@ jobs:
             os: macos-latest
 
   test-app-model:
-    uses: pyapp-kit/workflows/.github/workflows/test-dependents.yml@v2
+    # `dependency-group` is not in any tag yet; move back to a tag once one is cut.
+    uses: pyapp-kit/workflows/.github/workflows/test-dependents.yml@65abcc0b091a0d45dbe3c589266160cc9b62f8dc
     with:
       dependency-repo: pyapp-kit/app-model
       dependency-extras: "qt"
+      dependency-group: "test-qt"
       qt: "PyQt6"
-      # app-model declares its test requirements as PEP 735 dependency groups,
-      # which pip cannot install as extras. Resolving that group pulls
-      # `app-model[qt]` and can replace the checked-out in-n-out with a release
-      # from PyPI, so reinstall it afterwards to keep this job testing the PR.
-      post-install-cmd: >-
-        python -m pip install --group ./pyapp-kit/app-model/pyproject.toml:test-qt &&
-        python -m pip install --no-deps --force-reinstall ./pyapp-kit/in-n-out
 
   benchmarks:
     runs-on: ubuntu-latest
